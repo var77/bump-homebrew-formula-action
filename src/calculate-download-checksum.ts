@@ -137,7 +137,7 @@ export default async function (
   url: string,
   algorithm: string
 ): Promise<string> {
-  const downloadUrl = await resolveDownload(api, new URL(url))
+  const downloadUrl = new URL(url);
   const requestHeaders = { accept: 'application/octet-stream' }
   const hash = createHash(algorithm)
   log(downloadUrl)
