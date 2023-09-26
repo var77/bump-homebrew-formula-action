@@ -15,7 +15,7 @@ function stream(
   cb: (chunk: Buffer) => void
 ): Promise<void> {
   return new Promise((resolve, reject): void => {
-    ;(url.protocol == 'https:' ? HTTPS : HTTP)(url, { headers }, (res) => {
+    ; (url.protocol == 'https:' ? HTTPS : HTTP)(url, { headers }, (res) => {
       if (res.statusCode && res.statusCode >= 300 && res.statusCode < 400) {
         const loc = res.headers['location']
         if (loc == null) throw `HTTP ${res.statusCode} but no Location header`
@@ -41,13 +41,13 @@ async function resolveDownload(apiClient: API, url: URL): Promise<URL> {
       const res = await (archive.ext == '.zip'
         ? api.repos.downloadZipballArchive
         : api.repos.downloadTarballArchive)({
-        owner,
-        repo,
-        ref,
-        request: {
-          redirect: 'manual',
-        },
-      })
+          owner,
+          repo,
+          ref,
+          request: {
+            redirect: 'manual',
+          },
+        })
       const loc = res.headers['location'] as string
       // HACK: removing "legacy" from the codeload URL ensures that we get the
       // same archive file as web download. Otherwise, the downloaded archive
@@ -132,12 +132,15 @@ function log(url: URL): void {
   debug(`GET ${url.protocol}//${url.hostname}${url.pathname}${q}`)
 }
 
-export default async function (
+export default async function(
   api: API,
   url: string,
-  algorithm: string
+  algorithm: string,
+  isCustomUrl?: boolean
 ): Promise<string> {
-  const downloadUrl = new URL(url);
+  const downloadUrl = isCustomUrl
+    ? new URL(url)
+    : await resolveDownload(api, new URL(url))
   const requestHeaders = { accept: 'application/octet-stream' }
   const hash = createHash(algorithm)
   log(downloadUrl)

@@ -40,7 +40,7 @@ export function commitForRelease(
   )
 }
 
-export default async function (api: (token: string) => API): Promise<void> {
+export default async function(api: (token: string) => API): Promise<void> {
   const internalToken =
     process.env.GITHUB_TOKEN || process.env.COMMITTER_TOKEN || ''
   const externalToken = process.env.COMMITTER_TOKEN || ''
@@ -128,7 +128,12 @@ export async function prepareEdit(
     replacements.set(
       'sha256',
       getInput('download-sha256') ||
-        (await calculateDownloadChecksum(sameRepoClient, downloadUrl, 'sha256'))
+      (await calculateDownloadChecksum(
+        sameRepoClient,
+        downloadUrl,
+        'sha256',
+        !!getInput('download-url')
+      ))
     )
   }
 
